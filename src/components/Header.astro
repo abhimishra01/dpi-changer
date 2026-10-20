@@ -4,7 +4,7 @@ import ThemeToggle from './ThemeToggle.astro';
 const path = stripBase(Astro.url.pathname);
 const links = [
   { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/contact/', label: 'Contact', hideTiny: true }, // the footer has it too
 ];
 ---
 <header class="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
@@ -17,7 +17,7 @@ const links = [
       <nav aria-label="Main" class="flex items-center">
         {links.map((l) => (
           <a href={withBase(l.href)} aria-current={path === l.href ? 'page' : undefined}
-            class="rounded-full px-3 py-2 text-sm font-medium text-muted no-underline hover:text-ink aria-[current=page]:text-ink aria-[current=page]:bg-brand-soft">{l.label}</a>
+            class:list={['rounded-full px-3 py-2 text-sm font-medium text-muted no-underline hover:text-ink aria-[current=page]:text-ink aria-[current=page]:bg-brand-soft', l.hideTiny && 'max-[359px]:hidden']}>{l.label}</a>
         ))}
       </nav>
       <ThemeToggle />
