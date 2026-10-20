@@ -14,6 +14,7 @@ const links = [
       <span class="whitespace-nowrap text-lg leading-none"><span class="font-extrabold">DPI</span> <span class="font-medium text-muted">changer</span></span>
     </a>
     <div class="flex items-center gap-1">
+      <a href="https://bingemind.com/tools/" class="whitespace-nowrap rounded-full px-3 py-3 text-sm font-medium text-brand-ink no-underline hover:underline max-[420px]:px-2">More free tools</a>
       <nav aria-label="Main" class="flex items-center">
         {links.map((l) => (
           <a href={withBase(l.href)} aria-current={path === l.href ? 'page' : undefined}
