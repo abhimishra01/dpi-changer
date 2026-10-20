@@ -8,7 +8,7 @@ const presetList = [72, 96, 150, 300, 600];
 const check = mode === 'check';
 ---
 <section id="tool" aria-label="DPI changer" data-preset={preset ?? ''} data-mode={mode} class="rounded-2xl border border-line bg-card p-4 shadow-[var(--card-shadow)] sm:p-6">
-  <div id="drop" class="relative flex min-h-40 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted/50 bg-paper px-4 py-8 text-center transition-colors data-[over=true]:border-brand data-[over=true]:bg-brand-soft">
+  <div id="drop" class="relative flex min-h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted/50 bg-paper px-4 py-8 text-center transition-colors data-[over=true]:border-brand data-[over=true]:bg-brand-soft">
     <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-brand-ink"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
     <p class="hidden text-base font-semibold sm:block">Drop JPEG, PNG or WebP files here</p>
     <p class="hidden text-sm text-muted sm:block">or</p>
@@ -216,6 +216,8 @@ const check = mode === 'check';
     if (added) added.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }
   fileInput.addEventListener('change', () => { if (fileInput.files) add(fileInput.files); fileInput.value = ''; });
+  // The dashed box looks like a button, so a click anywhere in it opens the file picker too.
+  drop.addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('label, input')) fileInput.click(); });
   // A file dropped outside the box must not make the browser open it and lose the batch, so the whole window takes drops.
   ['dragenter', 'dragover'].forEach((t) => window.addEventListener(t, (e) => { e.preventDefault(); drop.dataset.over = 'true'; }));
   window.addEventListener('dragleave', (e) => { if (!(e as DragEvent).relatedTarget) drop.dataset.over = 'false'; });

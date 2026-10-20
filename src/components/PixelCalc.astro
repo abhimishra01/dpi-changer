@@ -22,6 +22,7 @@
   function update() {
     const a = Number(w.value), b = Number(h.value), c = Number(d.value);
     if (!(a > 0 && b > 0 && c >= 1 && c <= 9999)) { out.textContent = 'Enter a size and a DPI from 1 to 9999.'; return; }
+    if (a * c > 1e9 || b * c > 1e9) { out.textContent = 'That size is too large. Try a smaller print size.'; return; }
     out.textContent = `${Math.round(a * c).toLocaleString('en-US')} x ${Math.round(b * c).toLocaleString('en-US')} px`;
   }
   [w, h, d].forEach((el) => el.addEventListener('input', update));
