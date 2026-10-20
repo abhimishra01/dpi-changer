@@ -1,7 +1,7 @@
 ---
 // DPI changer. Everything runs in the browser. Byte-level edits live in src/lib/dpi.js.
 ---
-<section id="tool" aria-label="DPI changer" class="rounded-2xl border border-line bg-card p-4 sm:shadow-[6px_6px_0_0_var(--line)] sm:p-6">
+<section id="tool" aria-label="DPI changer" class="rounded-2xl border border-line bg-card p-4 shadow-[var(--card-shadow)] sm:p-6">
   <div id="drop" class="relative flex min-h-40 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted/50 bg-paper px-4 py-8 text-center transition-colors data-[over=true]:border-brand data-[over=true]:bg-brand-soft">
     <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-brand-ink"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
     <p class="hidden text-base font-semibold sm:block">Drop JPEG or PNG files here</p>
@@ -16,11 +16,11 @@
     <div class="mt-2 flex flex-wrap items-center gap-2" id="presets">
       {[72, 150, 300, 600].map((v) => (
         <button type="button" aria-pressed={v === 300 ? 'true' : 'false'} data-dpi={v}
-          class="preset min-h-11 min-w-16 rounded-xl border border-line bg-paper px-4 font-mono text-base font-semibold tabular-nums hover:border-brand aria-pressed:border-brand aria-pressed:bg-brand aria-pressed:text-white">{v}</button>
+          class="preset min-h-11 min-w-16 rounded-xl border border-edge bg-paper px-4 font-mono text-base font-semibold tabular-nums hover:border-brand aria-pressed:border-brand dark:aria-pressed:border-brand-ink aria-pressed:bg-brand aria-pressed:text-white">{v}</button>
       ))}
       <label class="ml-1 flex items-center gap-2 text-sm text-muted" for="custom">Custom
         <input id="custom" type="number" aria-describedby="dpi-msg" inputmode="numeric" min="1" max="9999" step="1" placeholder="e.g. 350" autocomplete="off"
-          class="min-h-11 w-32 rounded-xl border border-line bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
+          class="min-h-11 w-32 rounded-xl border border-edge bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
       </label>
     </div>
     <p id="dpi-msg" class="mt-2 hidden text-sm text-red-700 dark:text-red-400" role="alert"></p>
@@ -35,7 +35,7 @@
 
   <div id="actions" class="mt-3 hidden flex-wrap items-center gap-3">
     <button id="zip" type="button" class="min-h-11 rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50">Download all as zip</button>
-    <button id="clear" type="button" class="min-h-11 rounded-xl border border-line px-5 text-sm font-semibold hover:border-brand">Clear</button>
+    <button id="clear" type="button" class="min-h-11 rounded-xl border border-edge px-5 text-sm font-semibold hover:border-brand">Clear</button>
   </div>
 </section>
 

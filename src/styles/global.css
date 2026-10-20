@@ -2,6 +2,7 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
+  --color-edge: var(--edge);
   --color-brand: var(--brand);
   --color-brand-ink: var(--brand-ink);
   --color-brand-soft: var(--brand-soft);
@@ -16,28 +17,38 @@
 
 :root {
   color-scheme: light;
-  --paper: #f7f6f2;
+  --paper: #f6f7f5;
   --card: #ffffff;
-  --ink: #16161a;
-  --muted: #5d5d66;
-  --line: #e2e0d8;
-  --brand-ink: color-mix(in oklab, var(--brand) 82%, black);
-  --brand-soft: color-mix(in oklab, var(--brand) 10%, var(--paper));
+  --ink: #16181b;
+  --muted: #5b6068;
+  --line: #e3e5e1;
+  --line-strong: #c9ccc6;
+  --edge: #878c93;
+  --card-shadow: 0 1px 2px rgb(16 24 40 / .05), 0 8px 24px -12px rgb(16 24 40 / .10);
+  --brand-ink: color-mix(in oklab, var(--brand) 85%, black);
+  --brand-soft: color-mix(in oklab, var(--brand) 11%, var(--card));
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #0f1012;
-  --card: #17181b;
-  --ink: #ececea;
-  --muted: #a0a0a8;
-  --line: #2a2b30;
+  --paper: #0f1113;
+  --card: #17191c;
+  --ink: #eceeed;
+  --muted: #a3a8b0;
+  --line: #2a2d31;
+  --line-strong: #3a3e44;
+  --edge: #6b7078;
+  --card-shadow: none;
   --brand-ink: color-mix(in oklab, var(--brand) 55%, white);
-  --brand-soft: color-mix(in oklab, var(--brand) 18%, var(--paper));
+  --brand-soft: color-mix(in oklab, var(--brand) 14%, #121416);
 }
 
 html { background: var(--paper); scroll-padding-top: 5rem; }
 body { background: var(--paper); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-:focus-visible { outline: 2px solid var(--brand-ink); outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 2px; border-radius: 4px; }
+.ad-slot { margin: 2rem auto 0; max-width: 728px; min-height: 90px; border: 1px dashed var(--line-strong); border-radius: 10px; padding: 1.25rem 0.5rem 0.5rem; position: relative; }
+.ad-slot::before { content: "Advertisement"; position: absolute; top: 0.25rem; left: 0.5rem; font-size: 11px; letter-spacing: .04em; color: var(--muted); }
+@media (max-width: 639px) { .ad-slot { min-height: 100px; max-width: 320px; } }
+@media print { .ad-slot { display: none !important; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 
 /* Long-form text: used by article and legal pages */
