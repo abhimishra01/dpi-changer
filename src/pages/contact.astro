@@ -1,0 +1,9 @@
+---
+import Page from '../layouts/Page.astro';
+import site from '../site.config.ts';
+---
+<Page title="Contact" description={`Contact ${site.name}.`}>
+  <p>We want to hear about bugs, ideas and anything that is unclear.</p>
+  <p>Email: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+  <p>We try to reply within a few days. Please include the browser and device you use if you report a problem.</p>
+</Page>

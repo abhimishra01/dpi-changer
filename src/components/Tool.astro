@@ -1,0 +1,142 @@
+---
+// DPI changer. Everything runs in the browser. Byte-level edits live in src/lib/dpi.js.
+---
+<section id="tool" aria-label="DPI changer" class="rounded-2xl border border-line bg-card p-4 sm:shadow-[6px_6px_0_0_var(--line)] sm:p-6">
+  <div id="drop" class="relative flex min-h-40 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted/50 bg-paper px-4 py-8 text-center transition-colors data-[over=true]:border-brand data-[over=true]:bg-brand-soft">
+    <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-brand-ink"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    <p class="text-base font-semibold">Drop JPEG or PNG files here</p>
+    <p class="text-sm text-muted">or</p>
+    <label for="file" class="inline-flex min-h-11 cursor-pointer items-center rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:opacity-90 focus-within:outline-2">Choose images</label>
+    <input id="file" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" multiple class="sr-only" />
+    <p class="text-xs text-muted">Several files at once. Your images never leave your device.</p>
+  </div>
+
+  <fieldset class="mt-5">
+    <legend class="text-sm font-semibold">Set DPI to</legend>
+    <div class="mt-2 flex flex-wrap items-center gap-2" id="presets" role="radiogroup" aria-label="DPI presets">
+      {[72, 150, 300, 600].map((v) => (
+        <button type="button" role="radio" aria-checked={v === 300 ? 'true' : 'false'} data-dpi={v}
+          class="preset min-h-11 min-w-16 rounded-xl border border-line bg-paper px-4 font-mono text-base font-semibold tabular-nums hover:border-brand aria-checked:border-brand aria-checked:bg-brand aria-checked:text-white">{v}</button>
+      ))}
+      <label class="ml-1 flex items-center gap-2 text-sm text-muted" for="custom">Custom
+        <input id="custom" type="number" inputmode="numeric" min="1" max="9999" step="1" placeholder="e.g. 350" autocomplete="off"
+          class="min-h-11 w-32 rounded-xl border border-line bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
+      </label>
+    </div>
+    <p id="dpi-msg" class="mt-2 hidden text-sm text-red-700 dark:text-red-400" role="alert"></p>
+  </fieldset>
+
+  <div class="mt-5 min-h-24">
+    <p id="empty" class="rounded-xl bg-brand-soft p-4 text-sm text-muted">No files yet. Pixels stay exactly as they are. Only the DPI value in the file header changes.</p>
+    <ul id="list" class="grid gap-3" aria-live="polite"></ul>
+  </div>
+
+  <div id="actions" class="mt-4 hidden flex-wrap items-center gap-3">
+    <button id="zip" type="button" class="min-h-11 rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:opacity-90">Download all as zip</button>
+    <button id="clear" type="button" class="min-h-11 rounded-xl border border-line px-5 text-sm font-semibold hover:border-brand">Clear</button>
+  </div>
+</section>
+
+<script>
+  import { zipSync } from 'fflate';
+  import { inspect, setDpi, printSize, MAX_DPI } from '../lib/dpi.js';
+
+  type Item = { name: string; bytes: Uint8Array; info?: ReturnType<typeof inspect>; error?: string };
+  const items: Item[] = [];
+  let target = 300;
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const list = $('list'), empty = $('empty'), actions = $('actions'), msg = $('dpi-msg');
+  const custom = $<HTMLInputElement>('custom'), fileInput = $<HTMLInputElement>('file'), drop = $('drop');
+  const presets = Array.from(document.querySelectorAll<HTMLButtonElement>('.preset'));
+
+  const fmt = (n: number, d = 1) => n.toLocaleString('en-US', { maximumFractionDigits: d });
+  const outName = (n: string) => n.replace(/(\.[^.]+)?$/, `-${target}dpi$1`);
+
+  function save(name: string, data: Uint8Array, type: string) {
+    const url = URL.createObjectURL(new Blob([data as BlobPart], { type }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+  const mime = (it: Item) => (it.info?.type === 'png' ? 'image/png' : 'image/jpeg');
+
+  function row(it: Item) {
+    const li = document.createElement('li');
+    li.className = 'rounded-xl border border-line bg-paper p-3 sm:flex sm:items-center sm:gap-4';
+    const body = document.createElement('div');
+    body.className = 'min-w-0 flex-1';
+    const name = document.createElement('p');
+    name.className = 'truncate text-sm font-semibold'; name.textContent = it.name; name.title = it.name;
+    body.appendChild(name);
+    const meta = document.createElement('p');
+    meta.className = 'mt-1 text-sm text-muted';
+    if (it.error || !it.info) {
+      meta.className = 'mt-1 text-sm text-red-700 dark:text-red-400'; meta.textContent = it.error ?? 'Could not read this file.';
+      body.appendChild(meta); li.appendChild(body); return li;
+    }
+    const i = it.info, cur = i.dpi ? `${fmt(i.dpi.x)} DPI` : 'not set';
+    const s = printSize(i.width, i.height, target);
+    meta.innerHTML = '';
+    const lines = [
+      `${fmt(i.width, 0)} x ${fmt(i.height, 0)} px, ${i.type.toUpperCase()}`,
+      `DPI now: ${cur}  →  ${target}`,
+      `Print size at ${target} DPI: ${fmt(s.inW, 2)} x ${fmt(s.inH, 2)} in (${fmt(s.cmW)} x ${fmt(s.cmH)} cm)`,
+    ];
+    lines.forEach((t) => { const d = document.createElement('span'); d.className = 'block'; d.textContent = t; meta.appendChild(d); });
+    body.appendChild(meta);
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = 'Download';
+    btn.className = 'mt-3 min-h-11 w-full rounded-xl border border-brand px-4 text-sm font-semibold text-brand-ink hover:bg-brand-soft sm:mt-0 sm:w-auto';
+    btn.addEventListener('click', () => { try { save(outName(it.name), setDpi(it.bytes, target), mime(it)); } catch (e) { alert((e as Error).message); } });
+    li.append(body, btn);
+    return li;
+  }
+
+  function render() {
+    list.replaceChildren(...items.map(row));
+    empty.hidden = items.length > 0;
+    const ok = items.filter((x) => x.info).length;
+    actions.classList.toggle('hidden', ok === 0);
+    actions.classList.toggle('flex', ok > 0);
+    $('zip').hidden = ok < 2;
+  }
+
+  function setTarget(v: number, fromCustom = false) {
+    if (!Number.isInteger(v) || v < 1 || v > MAX_DPI) {
+      msg.textContent = `Enter a whole number from 1 to ${MAX_DPI}.`; msg.classList.remove('hidden'); return;
+    }
+    msg.classList.add('hidden'); target = v;
+    presets.forEach((b) => b.setAttribute('aria-checked', String(!fromCustom && Number(b.dataset.dpi) === v)));
+    render();
+  }
+  presets.forEach((b) => b.addEventListener('click', () => { custom.value = ''; setTarget(Number(b.dataset.dpi)); }));
+  custom.addEventListener('input', () => { if (custom.value.trim() === '') { setTarget(300); presets.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.dpi === '300'))); } else setTarget(Number(custom.value), true); });
+
+  async function add(files: FileList | File[]) {
+    for (const f of Array.from(files)) {
+      const it: Item = { name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) };
+      try { it.info = inspect(it.bytes); } catch (e) { it.error = (e as Error).message; }
+      items.push(it);
+    }
+    render();
+  }
+  fileInput.addEventListener('change', () => { if (fileInput.files) add(fileInput.files); fileInput.value = ''; });
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.dataset.over = 'true'; }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.dataset.over = 'false'; }));
+  drop.addEventListener('drop', (e) => { const dt = (e as DragEvent).dataTransfer; if (dt?.files) add(dt.files); });
+  $('clear').addEventListener('click', () => { items.length = 0; render(); });
+
+  $('zip').addEventListener('click', () => {
+    const files: Record<string, Uint8Array> = {};
+    const seen = new Map<string, number>();
+    for (const it of items) {
+      if (!it.info) continue;
+      let n = outName(it.name); const c = seen.get(n) ?? 0; seen.set(n, c + 1);
+      if (c) n = n.replace(/(\.[^.]+)?$/, `-${c + 1}$1`);
+      files[n] = setDpi(it.bytes, target);
+    }
+    save(`images-${target}dpi.zip`, zipSync(files, { level: 0 }), 'application/zip');
+  });
+  render();
+</script>

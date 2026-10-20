@@ -1,0 +1,57 @@
+---
+// SEO article for the DPI changer.
+import site from '../site.config.ts';
+---
+<section aria-labelledby="about-tool" class="mx-auto max-w-5xl px-4 pt-16">
+  <article class="prose-site">
+    <h2 id="about-tool" style="margin-top:0">How to change image DPI to 300</h2>
+    <p>To change image DPI to 300, drop your JPEG or PNG on the tool above, pick 300, and download the file. The tool only edits the small header of the file that stores the DPI value. It does not resize, re-compress or re-save the picture. The pixels stay the same, so the quality stays the same.</p>
+    <ol>
+      <li>Add one or more JPEG or PNG files.</li>
+      <li>Choose 72, 150, 300 or 600, or type your own value.</li>
+      <li>Check the print size shown for each file.</li>
+      <li>Download each file, or all of them as one zip.</li>
+    </ol>
+    <h2>What DPI means</h2>
+    <p>DPI stands for dots per inch. It tells a printer how many pixels of the image to place in one inch of paper. A 3000 by 2000 pixel photo at 300 DPI prints at 10 by 6.7 inches. The same photo at 150 DPI prints at 20 by 13.3 inches. The pixels did not change. Only the printed size did.</p>
+    <h2>Why print shops ask for 300 DPI</h2>
+    <p>At 300 DPI, the dots are so small that the eye sees smooth lines and sharp text. Below about 150 DPI, edges start to look soft or blocky. Print shops, photo labs and print-on-demand sites such as Etsy printables and book printers use 300 DPI as a safe standard. Large posters viewed from far away can use less.</p>
+    <h2>DPI is not the same as pixels</h2>
+    <p>Pixels are the real detail in a picture. DPI is only a label that says how big to print those pixels. A file can say 72 DPI or 300 DPI and hold exactly the same picture. Screens ignore the DPI value. Print software and layout programs read it to set the size on the page.</p>
+    <p>This is why a file that says 72 DPI is often rejected by a print service. The label is wrong for print, even if the picture is fine. Changing the label fixes that without any loss.</p>
+    <h2>When changing DPI is not enough</h2>
+    <p>Changing the DPI label does not add detail. If you need an 8 by 10 inch print at 300 DPI, the image must be at least 2400 by 3000 pixels. A small web image of 800 by 600 pixels will become 2.7 by 2 inches at 300 DPI. If you force it to print larger, it will look soft.</p>
+    <p>Do the math before you print: pixels divided by DPI gives inches. The tool shows this for you in inches and centimeters. If the print size is too small, you need a larger original. Upscaling programs can add pixels, but they guess the new detail and can change the look of the image.</p>
+    <h2>DPI and PPI</h2>
+    <p>You may also see PPI, which means pixels per inch. For image files the two terms mean the same thing in daily use. Photo apps say PPI. Print shops say DPI. Printers also use the word DPI for ink dots, which is a different number. For your image file, the value in the header is the one that counts.</p>
+    <h2>Common uses</h2>
+    <ul>
+      <li>Etsy and print-on-demand listings that ask for 300 DPI files.</li>
+      <li>School and work forms that need a scan at a set DPI.</li>
+      <li>Photo prints, flyers, business cards and book covers.</li>
+      <li>Fixing a batch of images that all say 72 DPI.</li>
+    </ul>
+    <h2>Worked example: an Etsy printable</h2>
+    <p>You made a poster at 2400 by 3000 pixels. Your export says 72 DPI, and the shop wants 300 DPI. Drop the file in, pick 300, and download. The tool shows 8 by 10 inches (20.3 by 25.4 cm). That fits an 8 by 10 frame, and the file now passes the shop check. If the buyer wants 16 by 20 inches, the same file would only give 150 DPI at that size, so you need a larger original.</p>
+    <h2>Common DPI values and print sizes</h2>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Print size table"><table>
+      <caption class="sr-only">Print size in inches for common pixel sizes and DPI values</caption>
+      <thead><tr><th scope="col">Pixels</th><th scope="col">At 72 DPI</th><th scope="col">At 150 DPI</th><th scope="col">At 300 DPI</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1200 x 1800</th><td>16.7 x 25 in</td><td>8 x 12 in</td><td>4 x 6 in</td></tr>
+        <tr><th scope="row">2400 x 3000</th><td>33.3 x 41.7 in</td><td>16 x 20 in</td><td>8 x 10 in</td></tr>
+        <tr><th scope="row">3300 x 5100</th><td>45.8 x 70.8 in</td><td>22 x 34 in</td><td>11 x 17 in</td></tr>
+        <tr><th scope="row">4000 x 6000</th><td>55.6 x 83.3 in</td><td>26.7 x 40 in</td><td>13.3 x 20 in</td></tr>
+      </tbody>
+    </table></div>
+    <h2>Which DPI to pick</h2>
+    <ul>
+      <li><strong>72:</strong> screens and web pages. Printers do not use it.</li>
+      <li><strong>150:</strong> large posters and banners seen from a distance.</li>
+      <li><strong>300:</strong> photos, flyers, cards, books and most print shops.</li>
+      <li><strong>600:</strong> fine line art, scans and small text.</li>
+    </ul>
+    <h2>Private by design</h2>
+    <p>The tool runs in your browser. Your files are read in memory on your device and are never uploaded. You can turn off your network after the page loads and it still works.</p>
+  </article>
+</section>
