@@ -4,13 +4,14 @@ import site from '../site.config.ts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
+import { withBase, stripBase } from '../lib/url.ts';
 
 interface Props { title?: string; description?: string; jsonLd?: object[]; noindex?: boolean; }
 const { title, description = site.description, jsonLd = [], noindex = false } = Astro.props;
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name}: ${site.keyword} (${site.tagline})`;
-const base = `https://${site.domain}`;
-const canonical = new URL(Astro.url.pathname, base).href;
-const image = site.ogImage ? new URL(site.ogImage, base).href : '';
+// Canonical always uses the real domain, even on the GitHub Pages copy. Social images use the host that serves the page.
+const canonical = new URL(stripBase(Astro.url.pathname), `https://${site.domain}`).href;
+const image = site.ogImage ? new URL(withBase(site.ogImage), Astro.site).href : '';
 ---
 <!doctype html>
 <html lang={site.locale} data-theme="light" style={`--brand:${site.brand}`}>
@@ -25,15 +26,13 @@ const image = site.ogImage ? new URL(site.ogImage, base).href : '';
     </script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content={[site.keyword, ...site.keywords].join(', ')} />
     <meta name="theme-color" content={site.brand} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={withBase('favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={withBase('apple-touch-icon.png')} />
+    <link rel="sitemap" href={withBase('sitemap-index.xml')} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
@@ -41,6 +40,9 @@ const image = site.ogImage ? new URL(site.ogImage, base).href : '';
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={site.locale.replace('-', '_')} />
     {image && <meta property="og:image" content={image} />}
+    {image && <meta property="og:image:width" content="1200" />}
+    {image && <meta property="og:image:height" content="630" />}
+    {image && <meta property="og:image:alt" content={`${site.name}: ${site.keyword}`} />}
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
@@ -48,7 +50,7 @@ const image = site.ogImage ? new URL(site.ogImage, base).href : '';
     {jsonLd.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
     <Analytics />
   </head>
-  <body class="min-h-screen antialiased">
+  <body class="min-h-screen">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-30 focus:rounded-lg focus:bg-card focus:px-3 focus:py-2">Skip to content</a>
     <Header />
     <main id="main"><slot /></main>
