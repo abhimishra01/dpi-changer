@@ -11,7 +11,9 @@ interface Props { title?: string; description?: string; jsonLd?: object[]; noind
 const { title, description = site.description, jsonLd = [], noindex = false } = Astro.props;
 // The GitHub Pages copy is a preview: keep it out of search results. Normal builds stay indexable.
 const isPreview = import.meta.env.BASE_URL.replace(/\/+$/, "") !== "";
-const fullTitle = title ? `${title} | ${site.name}` : `${site.name}: ${site.keyword} (${site.tagline})`;
+// Search results cut titles near 60 characters, so the site name is added only when it fits.
+const suffixed = (t: string) => (t.length + site.name.length + 3 <= 60 ? `${t} | ${site.name}` : t);
+const fullTitle = title ? suffixed(title) : `${site.name}: ${site.keyword} (${site.tagline})`;
 // Canonical always uses the real domain, even on the GitHub Pages copy. Social images use the host that serves the page.
 const canonical = site.origin + stripBase(Astro.url.pathname);
 const image = site.ogImage ? new URL(withBase(site.ogImage), Astro.site).href : '';
@@ -30,7 +32,7 @@ const image = site.ogImage ? new URL(withBase(site.ogImage), Astro.site).href : 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content={site.brand} />
-    {noindex || (isPreview && !site.bingemind) ? <meta name="robots" content="noindex" /> : site.bingemind && <meta name="robots" content="index,follow" />}
+    {noindex || (isPreview && !site.bingemind) ? <meta name="robots" content="noindex, follow" /> : site.bingemind && <meta name="robots" content="index,follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={withBase('favicon-32.png')} type="image/png" sizes="32x32" />
