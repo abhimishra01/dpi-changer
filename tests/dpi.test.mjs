@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { inspect, setDpi, crc32, printSize, outName, uniqueNames } from '../src/lib/dpi.js';
+import { inspect, setDpi, crc32, printSize, outName, uniqueNames, isWebp } from '../src/lib/dpi.js';
 
 const JPG = new Uint8Array(Buffer.from('/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEKADAAQAAAABAAAACAAAAAD/7QA4UGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmACZjs+EJ+/8AAEQgACAAQAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/bAEMAAgICAgICAwICAwUDAwMFBgUFBQUGCAYGBgYGCAoICAgICAgKCgoKCgoKCgwMDAwMDA4ODg4ODw8PDw8PDw8PD//bAEMBAgICBAQEBwQEBxALCQsQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEP/dAAQAAf/aAAwDAQACEQMRAD8A+c/Cf7L/ANz/AET/AMdr6Z8J/sv/AHP9E/8AHa9e8J/w19M+E+qfhXk8Y+JGba/vT4v6Nvi5nn7v9927/wCZ/9k=', 'base64')); // 16x8, JFIF units 0 (72:72 ratio only) + Exif without resolution tags
 const PNG = new Uint8Array(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAIAAAB/FOjAAAAA60lEQVR4nAXBMRGEMBAAwJOAggwSEJDiJVCnQgJlypVAlRoJFBGABCYKkICE340IU5jDEn5hDVvYg3CEM1zhDk94wxcikimZkyX5JWuyJXsiOZIzuZI7eZI3+ZKIbMrmbMl+2Zpt2Z7JjuzMruzOnuzNviyimIq5WIpfsRZbsReKoziLq7iLp3iLr4iopmqulupXrdVW7ZXqqM7qqu7qqd7qqyKaqZmbpfk1a7M1e6M5mrO5mrt5mrf5mohu6uZu6X7d2m3d3umO7uyu7u6e7u2+LmKYhnlYht+wDtuwD4ZjOIdruIdneIdv+AMVsrCB9+nIYgAAAABJRU5ErkJggg==', 'base64')); // 16x8, no pHYs
@@ -90,7 +90,7 @@ ok('png: replace an existing pHYs, no duplicates', () => {
   assert.equal(twice.length, once.length);
 });
 ok('rejects bad input', () => {
-  assert.throws(() => inspect(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])), /not a JPEG or PNG/);
+  assert.throws(() => inspect(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])), /not a JPEG, PNG or WebP/);
   assert.throws(() => setDpi(PNG, 0), /between/);
   assert.throws(() => setDpi(PNG, 100000), /between/);
 });
@@ -180,7 +180,11 @@ ok('jpeg: 1 and 9999 DPI round trip', () => { for (const d of [1, 9999]) eq([ins
 ok('jpeg: truncated and garbage input throw a plain error', () => {
   for (let len = 0; len < 40; len++) { try { inspect(JPG.subarray(0, len)); } catch (e) { assert.ok(e instanceof Error); } }
   assert.throws(() => inspect(new Uint8Array([0xff, 0xd8, 0xff, 0xd9])), /damaged/);
-  assert.throws(() => inspect(Uint8Array.from(Buffer.from('RIFF0000WEBPVP8 '))), /not a JPEG or PNG/);
+  assert.throws(() => inspect(Uint8Array.from(Buffer.from('RIFF0000WEBPVP8 '))), /not a JPEG, PNG or WebP/);
+});
+ok('webp: recognized by header, JPEG and PNG are not', () => {
+  assert.equal(isWebp(Uint8Array.from(Buffer.from('RIFF0000WEBPVP8 '))), true);
+  assert.equal(isWebp(JPG), false); assert.equal(isWebp(PNG), false); assert.equal(isWebp(new Uint8Array(4)), false);
 });
 ok('png: pHYs after IDAT moves before it, one chunk only', () => {
   const chunks = splitPng(PNG), iend = chunks.pop();

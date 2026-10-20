@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Tool from '../components/Tool.astro';
+import PixelCalc from '../components/PixelCalc.astro';
+import AdSlot from '../components/AdSlot.astro';
+import site from '../site.config.ts';
+import { guides } from '../data/guides.ts';
+import { withBase } from '../lib/url.ts';
+
+export function getStaticPaths() {
+  return guides.map((g) => ({ params: { slug: g.slug }, props: { g } }));
+}
+const { g } = Astro.props;
+const others = guides.filter((x) => x.slug !== g.slug);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: g.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<Base title={g.title} description={g.description} jsonLd={jsonLd}>
+  <section class="mx-auto max-w-5xl px-4 pt-8 sm:pt-10">
+    <p class="mb-3 text-sm"><a href={withBase('/')} class="text-muted underline-offset-4 hover:text-ink hover:underline">{site.name}</a></p>
+    <h1 class="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight [text-wrap:balance] sm:text-6xl">{g.h1}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-muted">{g.lead}</p>
+    <div class="mt-8">
+      {g.calc && <PixelCalc />}
+      <div class="min-h-[22rem]"><Tool preset={g.preset} mode={g.mode} /></div>
+    </div>
+    <AdSlot />
+  </section>
+  <section aria-labelledby="guide-body" class="mx-auto max-w-5xl px-4 pt-16">
+    <article class="prose-site">
+      <h2 id="guide-body" style="margin-top:0">{g.sections[0].h}</h2>
+      {g.sections.map((sec, i) => (
+        <>
+          {i > 0 && <h2>{sec.h}</h2>}
+          {(() => {
+            const out: any[] = []; let list: string[] = [];
+            const flush = () => { if (list.length) { out.push(<ul>{list.map((t) => <li>{t}</li>)}</ul>); list = []; } };
+            for (const t of sec.body) { if (t.startsWith('- ')) list.push(t.slice(2)); else { flush(); out.push(<p>{t}</p>); } }
+            flush();
+            return out;
+          })()}
+        </>
+      ))}
+      <h2>Questions</h2>
+      <dl>
+        {g.faq.map((f) => (<><dt><strong>{f.q}</strong></dt><dd style="margin:0 0 1rem">{f.a}</dd></>))}
+      </dl>
+      <h2>More tools on this site</h2>
+      <ul>
+        <li><a href={withBase('/')}>Change image DPI to 300</a> (the main tool)</li>
+        {others.map((o) => <li><a href={withBase(`/${o.slug}/`)}>{o.nav}</a></li>)}
+      </ul>
+    </article>
+  </section>
+</Base>

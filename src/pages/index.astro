@@ -6,6 +6,8 @@ import AdSlot from '../components/AdSlot.astro';
 import Faq from '../components/Faq.astro';
 import site from '../site.config.ts';
 import { faq } from '../data/faq.ts';
+import { guides } from '../data/guides.ts';
+import { withBase } from '../lib/url.ts';
 
 const base = `https://${site.domain}`;
 const jsonLd = [
@@ -20,7 +22,7 @@ const jsonLd = [
     browserRequirements: 'Requires JavaScript',
     inLanguage: site.locale,
     isAccessibleForFree: true,
-    featureList: ['Change DPI of JPEG and PNG files', 'No re-encoding, pixels stay the same', 'Several files at once', 'Download as a zip', 'Print size in inches and cm'],
+    featureList: ['Change DPI of JPEG, PNG and WebP files', 'No re-encoding, pixels stay the same', 'Several files at once', 'Download as a zip', 'Print size in inches and cm'],
     image: `${base}${site.ogImage}`,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   },
@@ -45,6 +47,18 @@ const jsonLd = [
     <div class="mt-8 min-h-[22rem]"><Tool /></div>
     <AdSlot />
   </section>
+  <section aria-labelledby="check-dpi" class="mx-auto max-w-5xl px-4 pt-16">
+    <div class="prose-site">
+      <h2 id="check-dpi" style="margin-top:0">Check the DPI of an image</h2>
+      <p>You can also use the tool just to look. Add a file and the row shows its DPI now, its size in pixels and how large it prints. Nothing changes unless you press Download.</p>
+    </div>
+  </section>
   <Article />
+  <section aria-labelledby="guides" class="mx-auto max-w-5xl px-4 pt-16">
+    <h2 id="guides" class="text-2xl font-bold tracking-tight">Guides for specific jobs</h2>
+    <ul class="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+      {guides.map((g) => <li><a href={withBase(`/${g.slug}/`)} class="inline-block py-1 text-brand-ink underline underline-offset-4">{g.nav}</a></li>)}
+    </ul>
+  </section>
   <Faq />
 </Base>

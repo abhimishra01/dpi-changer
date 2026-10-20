@@ -1,0 +1,28 @@
+---
+// Inches to pixels. Runs in the browser, no upload.
+---
+<form id="calc" class="mb-6 rounded-2xl border border-line bg-card p-4 shadow-[var(--card-shadow)] sm:p-6" onsubmit="return false" aria-labelledby="calc-title">
+  <h2 id="calc-title" class="text-lg font-bold">Pixels needed for a print size</h2>
+  <div class="mt-3 flex flex-wrap items-end gap-3">
+    <label class="text-sm text-muted">Width (in)
+      <input id="cw" type="number" inputmode="decimal" min="0.1" step="any" value="8" class="mt-1 block min-h-11 w-28 rounded-xl border border-edge bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
+    </label>
+    <label class="text-sm text-muted">Height (in)
+      <input id="ch" type="number" inputmode="decimal" min="0.1" step="any" value="10" class="mt-1 block min-h-11 w-28 rounded-xl border border-edge bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
+    </label>
+    <label class="text-sm text-muted">DPI
+      <input id="cd" type="number" inputmode="numeric" min="1" max="9999" step="1" value="300" class="mt-1 block min-h-11 w-28 rounded-xl border border-edge bg-paper px-3 font-mono text-base text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30" />
+    </label>
+  </div>
+  <p id="cout" role="status" class="mt-4 font-mono text-xl font-semibold tabular-nums">2,400 x 3,000 px</p>
+</form>
+<script>
+  const w = document.getElementById('cw') as HTMLInputElement, h = document.getElementById('ch') as HTMLInputElement, d = document.getElementById('cd') as HTMLInputElement;
+  const out = document.getElementById('cout')!;
+  function update() {
+    const a = Number(w.value), b = Number(h.value), c = Number(d.value);
+    if (!(a > 0 && b > 0 && c >= 1 && c <= 9999)) { out.textContent = 'Enter a size and a DPI from 1 to 9999.'; return; }
+    out.textContent = `${Math.round(a * c).toLocaleString('en-US')} x ${Math.round(b * c).toLocaleString('en-US')} px`;
+  }
+  [w, h, d].forEach((el) => el.addEventListener('input', update));
+</script>

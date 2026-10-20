@@ -45,3 +45,25 @@ Status: `npm test` 31 checks pass (was 15). `npm run build` passes. Browser chec
 18. dpi vs ppi
 19. 8x10 print size in pixels at 300 dpi
 20. bulk change dpi of many images
+
+## Gap fix (Peter, 2026-10-20)
+Source: comparison/dpi-changer.md. `npm test` 32 checks pass, `npm run build` builds 16 pages, Lighthouse (Google Chrome) 99/100/100/100 on the home page and 100 on all four on two landing pages. Browser check with playwright-cli (session gap-dpi) at 1280 and 390, light and dark (`screenshots/gap-*.png`); WebP download read back with sips: PNG, 300 DPI, same pixel size.
+
+Done
+- Must 1: thumbnail, pixel size and file size in each row ("photo.jpg, 1,200 x 800 px, JPEG, 111 KB").
+- Must 2: "Check the DPI of an image" H2 and sentence on the home page, plus the page /check-image-dpi/ (check mode: DPI now in bold, new DPI is optional).
+- Must 3: paste from the clipboard (Ctrl+V or Cmd+V) with a visible hint.
+- Must 4: WebP input. The browser decodes it and the file is saved as PNG at the new DPI. The row says so. FAQ updated. `isWebp` added to the lib with a test.
+- Must 5: 96 preset.
+- Should 6: tip row (Preview and Windows steps) and a "does not resize or add detail" box, shown once a file is added. Should 9: the 8 x 10 pixel line now shows for every file.
+- Should 7: with one file loaded, the button reads "Download photo-300dpi.jpg".
+- Should 8: 10 real pre-rendered pages from `src/data/guides.ts`, each with its own title, H1, description, preset, 3 to 4 text sections, its own FAQ with FAQPage JSON-LD, linked from the home page: change-dpi-of-multiple-images, change-png-dpi, change-jpg-dpi, dpi-changer-for-etsy, 72-dpi-to-300-dpi, check-image-dpi, change-dpi-to-150, change-dpi-to-600, change-dpi-to-96, inches-to-pixels-at-300-dpi.
+- Nice 11: the home page remembers the last DPI (landing pages keep their preset). Nice 12: inches-to-pixels calculator on its own page.
+- Pages builds stay noindex (unchanged Base layout). Sitemap lists all pages.
+
+Skipped
+- TIFF and BMP (nice 10): different decoders, and BMP and TIFF rarely need a DPI fix for print sellers. WebP covers the common failure.
+- Image preview as a large view: a 64 px thumbnail is enough for the row.
+- Animated WebP keeps only its first frame (not stated on the page yet).
+- Pages for "dpi on iphone", "mac preview", "dpi vs ppi" and "350": left for a later round to avoid thin pages.
+Note: home Lighthouse performance was 99 in one run (the earlier review had 100). Not investigated; the home page now has more text and 16 pages share the build.

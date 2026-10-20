@@ -26,6 +26,11 @@ export function detectType(b) {
   return null;
 }
 
+/** WebP files are decoded by the browser and saved as PNG, so the tool only needs to recognize them. */
+export function isWebp(b) {
+  return b.length > 12 && hasTag(b, 0, 'RIFF') && hasTag(b, 8, 'WEBP');
+}
+
 const u16 = (b, o) => (b[o] << 8) | b[o + 1];
 const u32 = (b, o) => ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0;
 const w16 = (b, o, v) => { b[o] = (v >> 8) & 0xff; b[o + 1] = v & 0xff; };
@@ -35,7 +40,7 @@ const hasTag = (b, o, text) => [...text].every((ch, i) => b[o + i] === ch.charCo
 const isJfif = (b, o) => hasTag(b, o, 'JFIF\0');
 const isExif = (b, o) => hasTag(b, o, 'Exif\0\0');
 
-const NOT_SUPPORTED = 'This file is not a JPEG or PNG. Convert WebP or HEIC files to JPEG or PNG first.';
+const NOT_SUPPORTED = 'This file is not a JPEG, PNG or WebP. Convert HEIC, TIFF or BMP files to JPEG or PNG first.';
 const DAMAGED = 'This file looks damaged and could not be read.';
 
 // ---------- JPEG ----------
