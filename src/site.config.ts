@@ -1,6 +1,6 @@
 // ONE config file. Change values here; every page reads from it.
 // Keep this file plain (no type-only syntax): scripts/deploy.mjs imports it directly.
-export default {
+const cfg = {
   name: 'DPI Changer',                 // shown in header, title, footer
   domain: 'dpichanger.com',            // no https://, no www. Used for canonical, sitemap, robots
   cloudflareProject: 'dpi-changer',    // Cloudflare Pages project name (used by npm run deploy)
@@ -17,4 +17,18 @@ export default {
   category: 'UtilitiesApplication',   // schema.org applicationCategory
   legalUpdated: 'October 20, 2026',     // "Last updated" on Privacy and Terms. Change it only when that text changes.
   owner: 'DPI Changer',                // name used in legal pages (person or business)
+};
+
+// Bingemind mode (SITE_MODE=bingemind): the tool lives at bingemind.com/dpi-changer/.
+// Canonical links always name that address. Legal pages name Bingemind as the owner.
+const bingemind = process.env.SITE_MODE === 'bingemind';
+export default {
+  ...cfg,
+  domain: 'bingemind.com/dpi-changer',
+  origin: 'https://bingemind.com/dpi-changer',
+  bingemind,
+  owner: bingemind ? 'Bingemind' : cfg.owner,
+  contactWord: bingemind ? 'Contact' : 'Email',
+  contactHref: bingemind ? 'https://bingemind.com/#contact' : `mailto:${cfg.email}`,
+  contactLabel: bingemind ? 'bingemind.com/#contact' : cfg.email,
 };

@@ -9,7 +9,7 @@ import { faq } from '../data/faq.ts';
 import { guides } from '../data/guides.ts';
 import { withBase } from '../lib/url.ts';
 
-const base = `https://${site.domain}`;
+const base = site.origin;
 const jsonLd = [
   {
     '@context': 'https://schema.org',

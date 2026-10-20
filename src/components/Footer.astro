@@ -14,6 +14,7 @@ const links = [
     <p class="text-sm text-muted">&copy; {year} {site.name}. Free to use.</p>
     <nav aria-label="Footer" class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
       {links.map((l) => <a href={withBase(l.href)} class="text-muted underline-offset-4 hover:text-ink hover:underline">{l.label}</a>)}
+    {site.bingemind && <a href="https://bingemind.com/tools/" class="inline-block py-2 text-muted underline-offset-4 hover:text-ink hover:underline">More free tools</a>}
     </nav>
   </div>
 </footer>
