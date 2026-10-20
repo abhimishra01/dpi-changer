@@ -1,6 +1,6 @@
 ---
 // SEO article for the DPI changer.
-import site from '../site.config.ts';
+import { withBase } from '../lib/url.ts';
 ---
 <section aria-labelledby="about-tool" class="mx-auto max-w-5xl px-4 pt-16">
   <article class="prose-site">
@@ -12,6 +12,8 @@ import site from '../site.config.ts';
       <li>Check the print size shown for each file.</li>
       <li>Download each file, or all of them as one zip.</li>
     </ol>
+    <h2>Convert 72 DPI to 300 DPI</h2>
+    <p>Most exports from design apps and screenshots say 72 DPI. To convert 72 DPI to 300 DPI, add the file, keep 300 selected, and download it. The picture does not change. Only the label changes, so the print size gets smaller. A 2400 by 3000 pixel file prints at 33.3 by 41.7 inches at 72 DPI, and at 8 by 10 inches at 300 DPI. If you need a larger print at 300 DPI, you need more pixels.</p>
     <h2>What DPI means</h2>
     <p>DPI stands for dots per inch. It tells a printer how many pixels of the image to place in one inch of paper. A 3000 by 2000 pixel photo at 300 DPI prints at 10 by 6.7 inches. The same photo at 150 DPI prints at 20 by 13.3 inches. The pixels did not change. Only the printed size did.</p>
     <h2>Why print shops ask for 300 DPI</h2>
@@ -24,6 +26,8 @@ import site from '../site.config.ts';
     <p>Do the math before you print: pixels divided by DPI gives inches. The tool shows this for you in inches and centimeters. If the print size is too small, you need a larger original. Upscaling programs can add pixels, but they guess the new detail and can change the look of the image.</p>
     <h2>DPI and PPI</h2>
     <p>You may also see PPI, which means pixels per inch. For image files the two terms mean the same thing in daily use. Photo apps say PPI. Print shops say DPI. Printers also use the word DPI for ink dots, which is a different number. For your image file, the value in the header is the one that counts.</p>
+    <h2>How to check the DPI of an image</h2>
+    <p>Add the file to the tool. The row shows the DPI it has now, the pixel size and the print size. You can also check on your computer. On a Mac, open the file in Preview and choose Tools, then Show Inspector. On Windows, right-click the file, choose Properties, then open the Details tab. Some files have no DPI value. The tool then shows "not set".</p>
     <h2>Common uses</h2>
     <ul>
       <li>Etsy and print-on-demand listings that ask for 300 DPI files.</li>
@@ -52,6 +56,6 @@ import site from '../site.config.ts';
       <li><strong>600:</strong> fine line art, scans and small text.</li>
     </ul>
     <h2>Private by design</h2>
-    <p>The tool runs in your browser. Your files are read in memory on your device and are never uploaded. You can turn off your network after the page loads and it still works.</p>
+    <p>The tool runs in your browser. Your files are read in memory on your device and are never uploaded. You can turn off your network after the page loads and it still works. Read the <a href={withBase('/privacy/')}>Privacy Policy</a> for details.</p>
   </article>
 </section>

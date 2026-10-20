@@ -1,10 +1,10 @@
 ---
 import Page from '../layouts/Page.astro';
 import site from '../site.config.ts';
-const updated = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+import { withBase } from '../lib/url.ts';
 ---
 <Page title="Terms of Use" description={`Terms of use for ${site.name}.`}>
-  <p>Last updated: {updated}</p>
+  <p>Last updated: {site.legalUpdated}</p>
   <p>By using {site.name} at {site.domain} you agree to these terms. If you do not agree, please do not use the site.</p>
   <h2>Use of the tool</h2>
   <p>The tool is free for personal and commercial use. Do not misuse the site, try to break it, or send automated bulk requests.</p>
@@ -13,7 +13,7 @@ const updated = new Date().toLocaleDateString('en-US', { year: 'numeric', month:
   <h2>Content and ownership</h2>
   <p>The design, text and code of this site belong to {site.owner}. You keep ownership of anything you enter into the tool.</p>
   <h2>Third-party services</h2>
-  <p>The site may show ads and use analytics from third parties. Their own terms apply. See our <a href="/privacy/">Privacy Policy</a>.</p>
+  <p>The site may show ads and use analytics from third parties. Their own terms apply. See our <a href={withBase('/privacy/')}>Privacy Policy</a>.</p>
   <h2>Changes</h2>
   <p>We may change the site or these terms at any time. The date above shows the latest update.</p>
   <h2>Contact</h2>

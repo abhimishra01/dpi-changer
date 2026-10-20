@@ -18,6 +18,9 @@ const jsonLd = [
     operatingSystem: 'Any',
     browserRequirements: 'Requires JavaScript',
     inLanguage: site.locale,
+    isAccessibleForFree: true,
+    featureList: ['Change DPI of JPEG and PNG files', 'No re-encoding, pixels stay the same', 'Several files at once', 'Download as a zip', 'Print size in inches and cm'],
+    image: `${base}${site.ogImage}`,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   },
   {
@@ -32,19 +35,13 @@ const jsonLd = [
 ];
 ---
 <Base jsonLd={jsonLd} title="Change Image DPI to 300, Free and Private">
-  <section class="mx-auto max-w-5xl px-4 pt-10 sm:pt-16">
+  <section class="mx-auto max-w-5xl px-4 pt-8 sm:pt-10">
     <p class="mb-3 inline-block rounded-full bg-brand-soft px-3 py-1 text-sm font-medium text-brand-ink">{site.tagline}</p>
     <h1 class="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight [text-wrap:balance] sm:text-6xl">
       {site.keyword.charAt(0).toUpperCase() + site.keyword.slice(1)}
     </h1>
     <p class="mt-4 max-w-2xl text-lg text-muted">{site.description}</p>
     <div class="mt-8 min-h-[22rem]"><Tool /></div>
-    <p class="mt-6 text-sm text-muted">
-      <a href="/about/" class="underline underline-offset-4 hover:text-ink">About</a> &middot;
-      <a href="/privacy/" class="underline underline-offset-4 hover:text-ink">Privacy Policy</a> &middot;
-      <a href="/terms/" class="underline underline-offset-4 hover:text-ink">Terms</a> &middot;
-      <a href="/contact/" class="underline underline-offset-4 hover:text-ink">Contact</a>
-    </p>
   </section>
   <Article />
   <Faq />

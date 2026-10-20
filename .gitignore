@@ -3,3 +3,6 @@ dist
 .astro
 .wrangler
 .playwright-cli
+screenshots
+dist-pages
+tmp-*
