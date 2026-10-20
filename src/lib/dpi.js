@@ -52,7 +52,7 @@ const PHOTOSHOP_ID = 'Photoshop 3.0\0';
 
 // Walk the marker segments before the scan data. Returns what we need to read or edit.
 function scanJpeg(b) {
-  const info = { jfif: -1, exif: -1, photoshop: [], adobe: -1, width: 0, height: 0 };
+  const info = { jfif: -1, exif: -1, photoshop: [], adobe: -1, width: 0, height: 0, components: 0 };
   let p = 2;
   while (p + 4 <= b.length) {
     if (b[p] !== 0xff) break;
@@ -66,7 +66,7 @@ function scanJpeg(b) {
     if (m === 0xed && len >= 16 && hasTag(b, p + 4, PHOTOSHOP_ID)) info.photoshop.push(p);
     if (m === 0xee && len >= 14 && hasTag(b, p + 4, 'Adobe')) info.adobe = b[p + 15]; // transform: 0 = RGB, 1 = YCbCr
     const isSof = m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc;
-    if (isSof && !info.width) { info.height = u16(b, p + 5); info.width = u16(b, p + 7); }
+    if (isSof && !info.width) { info.height = u16(b, p + 5); info.width = u16(b, p + 7); info.components = b[p + 9]; }
     p += 2 + len;
   }
   return info;
@@ -246,7 +246,7 @@ export function inspect(bytes) {
     let { width, height } = info;
     const e = info.exif >= 0 ? exifTags(bytes, info.exif) : null;
     if (e && e.orient >= 0 && e.rd16(e.orient) >= 5 && e.rd16(e.orient) <= 8) [width, height] = [height, width]; // phone photo stored sideways
-    return { type, width, height, dpi: readJpegDpi(bytes, info) };
+    return { type, width, height, dpi: readJpegDpi(bytes, info), cmyk: info.components === 4 };
   }
   if (type === 'png') {
     const r = readPng(bytes);

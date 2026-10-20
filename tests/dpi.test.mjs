@@ -231,4 +231,12 @@ if (process.platform === 'darwin') {
     passed++; console.log('ok sips reads', name, 'as', want, 'dpi');
   }
 }
+ok('jpeg: CMYK is flagged (4 components) and RGB is not', () => {
+  assert.equal(inspect(JPG).cmyk, false);
+  const b = new Uint8Array(JPG);
+  const sof = b.findIndex((v, k) => v === 0xff && b[k + 1] === 0xc0);
+  b[sof + 9] = 4;
+  assert.equal(inspect(b).cmyk, true);
+});
+
 console.log(passed + ' checks passed');

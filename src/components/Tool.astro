@@ -62,7 +62,7 @@ const check = mode === 'check';
   const KNOWN = [72, 96, 150, 300, 600];
   const MAX_TOTAL_BYTES = 500 * 1024 * 1024; // all files together; they are held in memory
 
-  type Item = { name: string; bytes: Uint8Array; size: number; thumb?: string; converted?: boolean; info?: ReturnType<typeof inspect>; error?: string };
+  type Item = { cmykBlocked?: boolean; name: string; bytes: Uint8Array; size: number; thumb?: string; converted?: boolean; info?: ReturnType<typeof inspect>; error?: string };
   const items: Item[] = [];
   let target = DEFAULT_DPI;
   let valid = true; // false while the custom box holds a bad value
@@ -123,9 +123,15 @@ const check = mode === 'check';
       line(meta, `Print size at ${target} DPI: ${fmt(s.inW, 2)} x ${fmt(s.inH, 2)} in (${fmt(s.cmW)} x ${fmt(s.cmH)} cm)`);
       line(meta, `An 8 x 10 in print at ${target} DPI needs ${fmt(8 * target, 0)} x ${fmt(10 * target, 0)} px.`);
     }
+    if (it.cmykBlocked) {
+      const warn = document.createElement('span');
+      warn.className = 'block font-semibold text-red-700 dark:text-red-400';
+      warn.textContent = 'CMYK JPEG: this file cannot be changed here. Convert it to RGB first.';
+      meta.appendChild(warn);
+    }
     const btn = document.createElement('button');
     const single = items.filter((x) => x.info).length === 1;
-    btn.type = 'button'; btn.disabled = !valid;
+    btn.type = 'button'; btn.disabled = !valid || !!it.cmykBlocked;
     if (single && valid) {
       const label = document.createElement('span'); label.className = 'block truncate'; label.textContent = `Download ${nameOf(it)}`;
       btn.appendChild(label);
@@ -205,6 +211,8 @@ const check = mode === 'check';
           it.bytes = new Uint8Array(await f.arrayBuffer());
           if (isWebp(it.bytes)) { it.bytes = await webpToPng(f); it.converted = true; }
           totalBytes += it.bytes.length; it.info = inspect(it.bytes);
+          // A CMYK JPEG without a JFIF block cannot take a DPI value. Tell the user now, not at Download.
+          if (it.info.cmyk) { try { setDpi(it.bytes, 300); } catch { it.cmykBlocked = true; } }
           it.thumb = URL.createObjectURL(f);
         }
         catch (e) { it.error = e instanceof Error && it.bytes.length ? e.message : 'Could not read this file.'; }
