@@ -8,6 +8,8 @@ import { withBase, stripBase } from '../lib/url.ts';
 
 interface Props { title?: string; description?: string; jsonLd?: object[]; noindex?: boolean; }
 const { title, description = site.description, jsonLd = [], noindex = false } = Astro.props;
+// The GitHub Pages copy is a preview: keep it out of search results. Normal builds stay indexable.
+const isPreview = import.meta.env.BASE_URL.replace(/\/+$/, "") !== "";
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name}: ${site.keyword} (${site.tagline})`;
 // Canonical always uses the real domain, even on the GitHub Pages copy. Social images use the host that serves the page.
 const canonical = new URL(stripBase(Astro.url.pathname), `https://${site.domain}`).href;
@@ -27,7 +29,7 @@ const image = site.ogImage ? new URL(withBase(site.ogImage), Astro.site).href : 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content={site.brand} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || isPreview) && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={withBase('favicon-32.png')} type="image/png" sizes="32x32" />
