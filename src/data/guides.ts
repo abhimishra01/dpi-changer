@@ -17,7 +17,7 @@ export interface Guide {
 export const guides: Guide[] = [
   {
     slug: 'convert-image-to-dpi',
-    nav: 'Convert image to DPI (image to DPI converter)',
+    nav: 'Convert image to DPI',
     title: 'Convert Image to DPI: Image to DPI Converter',
     h1: 'Convert an image to any DPI',
     description: 'Convert an image to 300, 150, 72 or any DPI with this free image to DPI converter. See the print size first. Pixels stay the same. Private.',
