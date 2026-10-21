@@ -1,5 +1,6 @@
 // FAQ items. Rendered on the home page AND output as FAQPage JSON-LD.
 export const faq = [
+  { q: 'How do I convert an image to a DPI value?', a: 'Add your JPEG or PNG, type the DPI you want, such as 300, and press Download. The tool changes only the DPI value in the file, so the image is not resized or recompressed.' },
   { q: 'Does changing DPI reduce image quality?', a: 'No. The tool edits only the DPI value in the file header. The pixel data is not decoded, resized or compressed again, so the image is identical.' },
   { q: 'Will a 72 DPI image look better at 300 DPI?', a: 'No. DPI does not add detail. It changes the printed size. A 3000 by 2000 pixel image prints at 10 by 6.7 inches at 300 DPI, whatever the old DPI value was.' },
   { q: 'Are my images uploaded to a server?', a: 'No. Everything runs in your browser. Your images never leave your device, and nothing is stored.' },

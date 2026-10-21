@@ -7,7 +7,7 @@ const cfg = {
   keyword: 'change image DPI to 300',            // main keyword: goes in the H1 and title
   tagline: 'Free, private, no quality loss',  // short line used in the title after the keyword
   description:
-    'Change the DPI of a JPEG or PNG to 300, 150, 72 or any value. Pixels stay untouched. Runs in your browser, so your images never leave your device.',
+    'Free image to DPI converter: set a JPEG or PNG to 300, 150, 72 or any DPI. Pixels stay untouched. Runs in your browser, so nothing is uploaded.',
   email: 'hello@dpichanger.com',       // contact email (shown on Contact and Privacy pages)
   ga4: '',                            // GA4 measurement ID, e.g. 'G-XXXXXXXXXX'. Empty = Google Analytics off
   adsense: '',                        // AdSense publisher ID, e.g. 'ca-pub-1234567890123456'. Empty = ads off

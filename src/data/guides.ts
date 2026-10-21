@@ -16,6 +16,38 @@ export interface Guide {
 
 export const guides: Guide[] = [
   {
+    slug: 'convert-image-to-dpi',
+    nav: 'Convert image to DPI (image to DPI converter)',
+    title: 'Convert Image to DPI: Image to DPI Converter',
+    h1: 'Convert an image to any DPI',
+    description: 'Convert an image to 300, 150, 72 or any DPI with this free image to DPI converter. See the print size first. Pixels stay the same. Private.',
+    preset: 300,
+    lead: 'An image to DPI converter sets the DPI value stored in a JPEG or PNG file. Add your image, pick the DPI you need, and download it. The pixels do not change.',
+    sections: [
+      { h: 'How to convert an image to a DPI value', body: [
+        '- Drop your JPEG or PNG on the box, or paste a screenshot.',
+        '- Type the DPI you need, or pick a preset such as 300 for print or 72 for screens.',
+        '- Check the print size in the row. It shows the size in inches and centimeters at the new DPI.',
+        '- Press Download. The file name ends with the new value, for example photo-300dpi.jpg.',
+      ] },
+      { h: 'What converting to DPI does and does not do', body: [
+        'DPI is the number of pixels that print in one inch. The file stores this number in its header. This tool changes that number and nothing else, so the picture is not resized, recompressed or sharpened.',
+        'A different DPI changes the print size. It does not add detail. If the print is too small or too soft, the image needs more pixels, not a higher DPI.',
+      ] },
+      { h: 'Common DPI values', body: [
+        '- 300 DPI: photos, flyers, business cards and most print jobs.',
+        '- 150 DPI: large prints that people view from a distance.',
+        '- 96 DPI: the default for many Windows programs.',
+        '- 72 DPI: screens and web images.',
+      ] },
+    ],
+    faq: [
+      { q: 'Is this an image to DPI converter or a resizer?', a: 'It is a DPI converter. It changes the DPI value in the file and keeps every pixel. To change the pixel size, you need a resizer.' },
+      { q: 'Can I convert an image to 300 DPI for free?', a: 'Yes. Choose 300 and download the file. There is no sign-up and no watermark. The file never leaves your device.' },
+      { q: 'Which image types can I convert?', a: 'JPEG and PNG. A WebP file is accepted and saved as a PNG with the same pixels.' },
+    ],
+  },
+  {
     slug: 'change-dpi-of-multiple-images',
     nav: 'Change DPI of many images at once',
     title: 'Change DPI of Multiple Images at Once, Free',
